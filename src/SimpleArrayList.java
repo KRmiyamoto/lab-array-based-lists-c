@@ -17,6 +17,9 @@ import java.util.NoSuchElementException;
  * and cleanly, rather than risking arbitrary, non-deterministic
  * behavior at an undetermined time in the future."  Our lists may
  * *not* fail fast.
+ * 
+ * @author Samuel Rebelsky
+ * @author Keely Miyamoto
  */
 public class SimpleArrayList<T> implements SimpleList<T> {
   // +-----------+---------------------------------------------------------
@@ -146,21 +149,31 @@ public class SimpleArrayList<T> implements SimpleList<T> {
       } // prevIndex
 
       public T previous() throws NoSuchElementException {
-        if (!this.hasPrevious())
+        if (!this.hasPrevious()) {
           throw new NoSuchElementException();
-        // STUB
-        return null;
+        } // if
+        int prev = this.pos - 1;
+        this.pos--;
+        return SimpleArrayList.this.values[prev];
       } // previous()
 
       public void remove() {
-        // Do the real work.
-        // STUB
-        throw new UnsupportedOperationException();
+        T[] vals = SimpleArrayList.this.values;
+        if (vals.length == 0) {
+          return;
+        } // if
+        for (int i = this.pos; i < SimpleArrayList.this.size - 1; i++) {
+          vals[i] = vals[i + 1];
+        }
+        vals[SimpleArrayList.this.size - 1] = null;
+        SimpleArrayList.this.size--;
       } // remove()
 
       public void set(T val) {
-        // STUB
-        throw new UnsupportedOperationException();
+        if (this.pos == 0) {
+          throw new IllegalStateException();
+        }
+        SimpleArrayList.this.values[this.pos - 1] = val;
       } // set(T)
     };
   } // listIterator()
